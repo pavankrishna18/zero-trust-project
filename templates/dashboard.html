@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <p>Role: <strong>{{ user.role }}</strong></p>
+    <p><small>🟢 Real-time updates enabled</small></p>
+
+    {% if anomalies['total'] > 0 %}
+    <div class="alert alert-warning">
+        <h3>⚠️ Security Alerts</h3>
+        {% for anomaly in anomalies['anomalies'] %}
+            <p><strong>{{ anomaly['type'] }}</strong>: {{ anomaly['details'] }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h3>Your Devices</h3>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Browser</th>
+                    <th>OS</th>
+                    <th>IP Address</th>
+                    <th>Status</th>
+                    <th>Last Seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if devices %}
+                    {% for device in devices %}
+                    <tr>
+                        <td>{{ device.browser }}</td>
+                        <td>{{ device.os }}</td>
+                        <td>{{ device.ip_address }}</td>
+                        <td>
+                            {% if device.is_trusted %}
+                                <span class="badge badge-success">✅ Trusted</span>
+                            {% else %}
+                                <span class="badge badge-warning">⏳ Pending Approval</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ device.last_seen.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center;">📱 No devices registered</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Recent Activities</h3>
+    <div class="table-container">
+        <table class="data-table" id="activities-table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if activities %}
+                    {% for activity in activities %}
+                    <tr>
+                        <td>{{ activity['action'] }}</td>
+                        <td>
+                            {% if activity['status'] == 'success' %}
+                                <span class="badge badge-success">✅ {{ activity['status'] }}</span>
+                            {% elif activity['status'] == 'failed' or activity['status'] == 'denied' %}
+                                <span class="badge badge-danger">❌ {{ activity['status'] }}</span>
+                            {% else %}
+                                <span class="badge badge-warning">⏳ {{ activity['status'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ activity['timestamp'] }}</td>
+                        <td>{{ activity['details'] or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center;">📝 No activities yet</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

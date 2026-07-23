@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Available Resources - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Available Resources</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="resources-page">
+    <h1>📚 Available Resources in ZeroTrustX</h1>
+    <p class="subtitle">Use these resource names when creating access policies</p>
+    
+    <div class="resources-grid">
+        {% for resource in resources %}
+        <div class="resource-card">
+            <h3>{{ resource.name }}</h3>
+            <p class="description">{{ resource.description }}</p>
+            
+            <div class="resource-id">
+                <strong>Resource ID:</strong>
+                <code>{{ resource.id }}</code>
+                <button class="copy-btn" onclick="copyToClipboard('{{ resource.id }}')">📋 Copy</button>
+            </div>
+            
+            <div class="accessible-roles">
+                <strong>Default Access:</strong>
+                <p>{{ resource.accessible_roles }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .resources-page {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .subtitle {
+        color: var(--text-dim);
+        margin-bottom: 2rem;
+    }
+
+    .resources-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .resource-card {
+        background: var(--surface);
+        border: 1px solid var(--border-soft);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        transition: all 0.3s;
+    }
+
+    .resource-card:hover {
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+        border-color: var(--accent);
+    }
+
+    .resource-card h3 {
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .description {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .resource-id {
+        background: var(--surface-2);
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    code {
+        background: var(--surface);
+        padding: 0.3rem 0.6rem;
+        border-radius: 3px;
+        font-family:'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        flex: 1;
+    }
+
+    .copy-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+        background: #2563eb;
+    }
+
+    .accessible-roles {
+        background: var(--surface-2);
+        padding: 0.75rem;
+        border-radius: 4px;
+        border-left: 3px solid var(--accent);
+    }
+
+    .accessible-roles strong {
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .accessible-roles p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    .btn-secondary {
+        background: var(--surface-2);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: #1c2638;
+    }
+</style>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✅ Copied: ' + text);
+        });
+    }
+</script>
+{% endblock %}

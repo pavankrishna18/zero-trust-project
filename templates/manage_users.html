@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Users</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="admin-section">
+
+    <h2>👥 User Management</h2>
+
+    <!-- CREATE NEW USER -->
+    <div style="background: var(--surface-2); padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 2px solid var(--accent);">
+        <h3>➕ Create New User</h3>
+        <form method="POST" action="{{ url_for('create_user') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <label><strong>Username</strong></label>
+                    <input type="text" name="username" required style="width: 100%; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px;">
+                </div>
+                <div>
+                    <label><strong>Email</strong></label>
+                    <input type="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px;">
+                </div>
+                <div>
+                    <label><strong>Password</strong></label>
+                    <input type="password" name="password" required style="width: 100%; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px;">
+                </div>
+                <div>
+                    <label><strong>Role</strong></label>
+                    <select name="role" required style="width: 100%; padding: 10px; border: 1px solid var(--border-soft); border-radius: 4px;">
+                        <option value="">-- Select Role --</option>
+                        <option value="admin">👨‍💼 Admin</option>
+                        <option value="user">👤 User</option>
+                        <option value="guest">🌐 Guest</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success" style="padding: 12px 30px; font-size: 16px;">✅ Create User</button>
+        </form>
+    </div>
+
+    <!-- EXISTING USERS -->
+    <h3>📋 All Users</h3>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Current Role</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Change Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr {% if user.is_locked %}style="background: var(--danger-soft);"{% endif %}>
+                    <td><strong>{{ user.username }}</strong> {% if user.id == current_user.id %}<small>(YOU)</small>{% endif %}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.role == 'admin' %}👨‍💼 Admin
+                        {% elif user.role == 'user' %}👤 User
+                        {% else %}🌐 Guest{% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_locked %}
+                            <span class="badge badge-danger">🔒 Locked</span>
+                        {% elif user.is_active %}
+                            <span class="badge badge-success">✅ Active</span>
+                        {% else %}
+                            <span class="badge badge-warning">⏸️ Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if user.id != current_user.id %}
+                        <form method="POST" action="{{ url_for('change_user_role', user_id=user.id) }}" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <select name="role" style="padding: 6px; border: 1px solid var(--border-soft); border-radius: 3px;" onchange="this.form.submit()">
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>👨‍💼 Admin</option>
+                                <option value="user" {% if user.role == 'user' %}selected{% endif %}>👤 User</option>
+                                <option value="guest" {% if user.role == 'guest' %}selected{% endif %}>🌐 Guest</option>
+                            </select>
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_locked %}
+                            <a href="{{ url_for('unlock_account', user_id=user.id) }}" class="btn btn-small btn-warning">🔓 Unlock</a>
+                        {% endif %}
+                        {% if user.id != current_user.id %}
+                            <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-small btn-danger" onclick="return confirm('Delete {{ user.username }}?')">🗑️ Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .admin-section {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .table-container {
+        background: var(--surface);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        margin-bottom: 25px;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .data-table thead {
+        background: var(--surface-2);
+        border-bottom: 2px solid var(--border-soft);
+    }
+    
+    .data-table th {
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .data-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-soft);
+    }
+    
+    .data-table tr:hover {
+        background: var(--surface-2);
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .badge-success {
+        background: var(--success-soft);
+        color: #86EFAC;
+    }
+    
+    .badge-danger {
+        background: var(--danger-soft);
+        color: #FCA5A5;
+    }
+    
+    .badge-warning {
+        background: var(--warning-soft);
+        color: #FCD34D;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    
+    .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .btn-success {
+        background: var(--success);
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #16a34a;
+    }
+    
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+    
+    .btn-warning {
+        background: var(--warning);
+        color: black;
+    }
+    
+    .btn-warning:hover {
+        background: #d97706;
+    }
+</style>
+{% endblock %}

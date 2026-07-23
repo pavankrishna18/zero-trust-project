@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Reports - ZeroTrustX{% endblock %}
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Reports</span>
+    </nav>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-container">
+    <h1>📊 Reports</h1>
+    <p style="color: green; font-weight: 600;">✅ Access Granted - Reports accessible to Manager, Admin ONLY</p>
+    
+    <div class="feature-card">
+        <h2>Available Reports</h2>
+        <ul>
+            <li>Monthly Activity Report</li>
+            <li>Security Incidents Report</li>
+            <li>User Access Report</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .page-container { max-width: 800px; margin: 2rem auto; background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .feature-card { background: var(--surface-2); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid var(--warning); }
+</style>
+{% endblock %}

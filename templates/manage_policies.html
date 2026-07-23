@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Policies - ZeroTrustX{% endblock %}
+{% block page_title %}Access Policies{% endblock %}
+{% block page_crumb %}Define who can access what, and under which conditions{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Policies</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="policies-grid">
+
+    <section class="card span-12">
+        <div class="card-header">
+            <div>
+                <h3>Create New Policy</h3>
+                <div class="subtitle">Rules are evaluated against role, resource, and action on every request</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('create_rule') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Policy Name</label>
+                        <input type="text" name="name" placeholder="e.g., Admin Report Access" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" required>
+                            <option value="">Select role</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="user">User</option>
+                            <option value="guest">Guest</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Resource</label>
+                        <select name="resource" required>
+                            <option value="">Select resource</option>
+                            <option value="admin_dashboard">admin_dashboard</option>
+                            <option value="user_management">user_management</option>
+                            <option value="policy_management">policy_management</option>
+                            <option value="team_dashboard">team_dashboard</option>
+                            <option value="activity_logs">activity_logs</option>
+                            <option value="user_dashboard">user_dashboard</option>
+                            <option value="employee_directory">employee_directory</option>
+                            <option value="projects">projects</option>
+                            <option value="leave_management">leave_management</option>
+                            <option value="device_management">device_management</option>
+                            <option value="payroll">payroll</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Action</label>
+                        <select name="action" required>
+                            <option value="">Select action</option>
+                            <option value="read">Read</option>
+                            <option value="write">Write</option>
+                            <option value="delete">Delete</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <label class="check-pill">
+                        <input type="checkbox" name="require_trusted_device">
+                        <span>Require trusted device</span>
+                    </label>
+                    <label class="check-pill">
+                        <input type="checkbox" name="require_business_hours">
+                        <span>Require business hours (9 AM &ndash; 6 PM)</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create Policy
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <section class="card span-12">
+        <div class="card-header">
+            <div>
+                <h3>All Policies</h3>
+                <div class="subtitle">{{ rules|length }} rule(s) configured</div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if rules %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Resource</th>
+                            <th>Action</th>
+                            <th>Conditions</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rule in rules %}
+                        <tr>
+                            <td><strong>{{ rule.name }}</strong></td>
+                            <td><span class="badge badge-{{ 'admin' if rule.role == 'admin' else ('manager' if rule.role == 'manager' else 'user') }}">{{ rule.role }}</span></td>
+                            <td><code>{{ rule.resource }}</code></td>
+                            <td>{{ rule.action }}</td>
+                            <td>
+                                {% if rule.require_trusted_device %}<span class="badge badge-manager">Device</span>{% endif %}
+                                {% if rule.require_business_hours %}<span class="badge badge-manager">Hours</span>{% endif %}
+                                {% if not rule.require_trusted_device and not rule.require_business_hours %}<span class="dim-text">None</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if rule.is_active %}
+                                <span class="badge badge-user">Active</span>
+                                {% else %}
+                                <span class="badge" style="background:var(--danger-soft);color:#FCA5A5;">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('delete_rule', rule_id=rule.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this policy?')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state"><p>No policies configured yet</p><small>Create your first policy above.</small></div>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.policies-grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:var(--space-3);}
+.span-12{grid-column:span 12;}
+.dim-text{color:var(--text-faint);font-size:0.84rem;}
+.empty-state{text-align:center;padding:var(--space-4) var(--space-2);color:var(--text-faint);font-size:0.86rem;}
+.empty-state small{display:block;margin-top:6px;}
+
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:var(--space-2);margin-bottom:var(--space-2);}
+
+.checkbox-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:var(--space-3);}
+.check-pill{
+    display:flex;align-items:center;gap:9px;
+    padding:10px 14px;
+    background:var(--surface-2);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius-sm);
+    font-size:0.84rem;
+    color:var(--text-dim);
+    cursor:pointer;
+}
+.check-pill input{width:auto;margin:0;}
+
+code{
+    background:var(--surface-2);
+    padding:3px 7px;
+    border-radius:5px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    color:#93C5FD;
+}
+</style>
+{% endblock %}

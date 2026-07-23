@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User - {{ edit_user.username }} - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('manage_users') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Users
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('manage_users') }}">Users</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">{{ edit_user.username }}</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-edit"></i> Edit User: {{ edit_user.username }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('edit_user', user_id=edit_user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <!-- Username (Read-only) -->
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-user"></i> Username</label>
+                            <input type="text" class="form-control" value="{{ edit_user.username }}" readonly>
+                            <small class="text-muted">Username cannot be changed</small>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ edit_user.email }}" required>
+                        </div>
+
+                        <!-- Department Selection (Same as Register) -->
+                        <div class="mb-3">
+                            <label for="department" class="form-label">
+                                <i class="fas fa-building"></i> Department
+                            </label>
+                            <select class="form-select" id="department" name="department" required>
+                                <option value="">-- Select Department --</option>
+                                <option value="IT" {% if edit_user.department == 'IT' %}selected{% endif %}>IT Department</option>
+                                <option value="HR" {% if edit_user.department == 'HR' %}selected{% endif %}>HR Department</option>
+                                <option value="Finance" {% if edit_user.department == 'Finance' %}selected{% endif %}>Finance Department</option>
+                                <option value="Operations" {% if edit_user.department == 'Operations' %}selected{% endif %}>Operations Department</option>
+                                <option value="Sales" {% if edit_user.department == 'Sales' %}selected{% endif %}>Sales Department</option>
+                                <option value="Marketing" {% if edit_user.department == 'Marketing' %}selected{% endif %}>Marketing Department</option>
+                                <option value="General" {% if edit_user.department == 'General' %}selected{% endif %}>General</option>
+                            </select>
+                            <small class="text-muted">Choose your department</small>
+                        </div>
+
+                        <!-- Role Selection (Same as Register) -->
+                        <div class="mb-3">
+                            <label for="role" class="form-label">
+                                <i class="fas fa-shield-alt"></i> Your Role/Position
+                            </label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="">-- Select Your Role --</option>
+                                <option value="user" {% if edit_user.role == 'user' %}selected{% endif %}>Employee (Standard User)</option>
+                                <option value="manager" {% if edit_user.role == 'manager' %}selected{% endif %}>Manager/Team Lead</option>
+                                <option value="admin" {% if edit_user.role == 'admin' %}selected{% endif %}>Admin (System Administrator)</option>
+                                <option value="guest" {% if edit_user.role == 'guest' %}selected{% endif %}>Guest (Read-only Access)</option>
+                            </select>
+                            <small class="text-muted">Select your role level</small>
+                        </div>
+
+                        <!-- Account Status (Read-only info) -->
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-info-circle"></i> Account Status</label>
+                            <div class="alert alert-info">
+                                <strong>Status:</strong> 
+                                {% if edit_user.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                                
+                                {% if edit_user.is_locked %}
+                                    <span class="badge bg-warning">Locked</span>
+                                {% endif %}
+                                
+                                {% if edit_user.is_super_admin %}
+                                    <span class="badge bg-danger">Super Admin</span>
+                                {% endif %}
+                                <br>
+                                <small><strong>Created:</strong> {{ edit_user.created_at.strftime('%Y-%m-%d %H:%M') if edit_user.created_at }}</small><br>
+                                <small><strong>Last Login:</strong> {{ edit_user.last_login.strftime('%Y-%m-%d %H:%M') if edit_user.last_login else 'Never' }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+</style>
+{% endblock %}

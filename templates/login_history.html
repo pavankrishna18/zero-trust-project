@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Login History - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Recent Logs</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="login-history-page">
+    <div class="page-header">
+        <h1>🌍 Login History & Geo-Location Tracking</h1>
+    </div>
+
+    <div class="content-card">
+        {% if login_history.items %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>IP</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for login in login_history.items %}
+                    <tr>
+                        <td>{{ login.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td><strong>{{ login.user.username if login.user else 'Unknown' }}</strong></td>
+                        <td><code>{{ login.ip_address }}</code></td>
+                        <td>{{ login.city if login.city else 'Unknown' }}, {{ login.country if login.country else 'Unknown' }}</td>
+                        <td>
+                            {% if login.success %}
+                            <span class="badge badge-success">✅</span>
+                            {% else %}
+                            <span class="badge badge-danger">❌</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if login.risk_score %}
+                            <span class="badge {% if login.risk_score >= 70 %}badge-danger{% elif login.risk_score >= 40 %}badge-warning{% else %}badge-success{% endif %}">
+                                {{ login.risk_score }}
+                            </span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            {% if login_history.has_prev %}
+            <a href="?page={{ login_history.prev_num }}" class="btn btn-sm">Previous</a>
+            {% endif %}
+            <span>Page {{ login_history.page }} of {{ login_history.pages }}</span>
+            {% if login_history.has_next %}
+            <a href="?page={{ login_history.next_num }}" class="btn btn-sm">Next</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <p style="text-align: center; padding: 2rem; color: var(--text-faint);">No login history available</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .login-history-page {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .content-card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th {
+        background: var(--surface-2);
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid var(--border-soft);
+    }
+
+    .data-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-soft);
+    }
+
+    .badge {
+        padding: 0.3rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-success { background: var(--success-soft); color: #86EFAC; }
+    .badge-danger { background: var(--danger-soft); color: #FCA5A5; }
+    .badge-warning { background: var(--warning-soft); color: #FCD34D; }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        background: var(--accent);
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background: #2563eb;
+    }
+
+    .btn-secondary {
+        background: var(--surface-2);
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}

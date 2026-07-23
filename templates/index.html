@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="home-page">
+    <div class="hero-section">
+        <h1>Welcome to ZeroTrustX</h1>
+        <p class="subtitle">Zero Trust Network Access Framework</p>
+        <p class="description">Secure your network with continuous verification and zero implicit trust</p>
+    </div>
+
+    <div class="features-section">
+        <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3>Multi-Factor Authentication</h3>
+            <p>OTP-based 2FA for enhanced security</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Device Trust</h3>
+            <p>Fingerprinting and trust evaluation</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">👤</div>
+            <h3>Role-Based Access</h3>
+            <p>Granular access control policies</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Real-Time Monitoring</h3>
+            <p>Activity logging and anomaly detection</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <a href="{{ url_for('login') }}" class="btn-primary">Login</a>
+        <a href="{{ url_for('register') }}" class="btn-secondary">Register</a>
+    </div>
+</div>
+
+<style>
+    .home-page {
+        padding: 3rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero-section {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
+
+    .description {
+        font-size: 1.1rem;
+        color: var(--text-dim);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .feature-card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        text-align: center;
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+        color: var(--text-dim);
+    }
+
+    .cta-section {
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        margin: 0 0.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+        background: #1d4ed8;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #1d4ed8;
+        box-shadow: 0 4px 8px rgba(118, 75, 162, 0.3);
+    }
+</style>
+{% endblock %}

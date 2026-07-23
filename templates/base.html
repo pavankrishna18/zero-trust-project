@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}ZeroTrustX{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#0B1120;
+    --surface:#111827;
+    --surface-2:#161F32;
+    --border:#1F2937;
+    --border-soft:rgba(255,255,255,0.06);
+    --accent:#3B82F6;
+    --accent-soft:rgba(59,130,246,0.12);
+    --danger:#EF4444;
+    --danger-soft:rgba(239,68,68,0.12);
+    --warning:#F59E0B;
+    --warning-soft:rgba(245,158,11,0.12);
+    --success:#22C55E;
+    --success-soft:rgba(34,197,94,0.12);
+    --text:#E5E9F0;
+    --text-dim:#9AA4B2;
+    --text-faint:#5B6677;
+    --radius:14px;
+    --radius-sm:8px;
+    --space-1:8px;
+    --space-2:16px;
+    --space-3:24px;
+    --space-4:32px;
+    --space-5:40px;
+    --sidebar-w:248px;
+    --header-h:64px;
+    --shadow-soft:0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.5);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html,body{height:100%;}
+
+body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(59,130,246,0.06), transparent 40%),
+        radial-gradient(circle at 100% 0%, rgba(59,130,246,0.04), transparent 35%);
+    background-attachment:fixed;
+    color:var(--text);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+}
+
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+
+::selection{background:var(--accent-soft);color:var(--text);}
+
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-faint);}
+
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+    border-radius:4px;
+}
+
+.app-shell{display:flex;min-height:100vh;}
+
+.sidebar{
+    width:var(--sidebar-w);
+    flex-shrink:0;
+    background:rgba(17,24,39,0.7);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-right:1px solid var(--border-soft);
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    top:0;left:0;bottom:0;
+    z-index:40;
+    transition:transform .25s ease;
+}
+
+.sidebar-brand{
+    display:flex;align-items:center;gap:10px;
+    padding:0 var(--space-3);
+    height:var(--header-h);
+    border-bottom:1px solid var(--border-soft);
+    flex-shrink:0;
+}
+.sidebar-brand .mark{
+    width:32px;height:32px;border-radius:9px;
+    background:linear-gradient(135deg, var(--accent), #1d4ed8);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px -4px rgba(59,130,246,0.6);
+    flex-shrink:0;
+}
+.sidebar-brand .mark svg{width:18px;height:18px;stroke:#fff;}
+.sidebar-brand .name{font-weight:700;font-size:0.95rem;letter-spacing:-0.01em;}
+.sidebar-brand .name small{
+    display:block;font-weight:500;font-size:0.68rem;color:var(--text-faint);
+    letter-spacing:0.04em;text-transform:uppercase;margin-top:1px;
+}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:var(--space-2) 12px;display:flex;flex-direction:column;gap:2px;}
+
+.nav-section-label{
+    font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--text-faint);padding:var(--space-2) 12px 6px;
+}
+
+.nav-item{
+    display:flex;align-items:center;gap:11px;
+    padding:9px 12px;border-radius:var(--radius-sm);
+    color:var(--text-dim);font-size:0.875rem;font-weight:500;
+    transition:background .15s ease,color .15s ease;
+    position:relative;
+}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text);text-decoration:none;}
+.nav-item.active{background:var(--accent-soft);color:#93C5FD;}
+.nav-item.active::before{
+    content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+    width:3px;height:18px;border-radius:0 3px 3px 0;background:var(--accent);
+}
+
+.sidebar-footer{padding:var(--space-2) 12px;border-top:1px solid var(--border-soft);flex-shrink:0;}
+.user-chip{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--radius-sm);}
+.user-chip .avatar{
+    width:34px;height:34px;border-radius:9px;background:var(--surface-2);
+    border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;
+    font-size:0.78rem;font-weight:700;color:var(--accent);flex-shrink:0;
+}
+.user-chip .meta{min-width:0;flex:1;}
+.user-chip .uname{font-size:0.825rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-chip .urole{font-size:0.72rem;color:var(--text-faint);text-transform:capitalize;}
+.user-chip .logout-btn{
+    color:var(--text-faint);display:flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:var(--radius-sm);flex-shrink:0;
+    transition:background .15s, color .15s;
+}
+.user-chip .logout-btn:hover{background:var(--danger-soft);color:var(--danger);}
+.user-chip .logout-btn svg{width:16px;height:16px;stroke:currentColor;}
+
+.main-col{flex:1;margin-left:var(--sidebar-w);min-width:0;display:flex;flex-direction:column;}
+
+.topbar{
+    height:var(--header-h);display:flex;align-items:center;justify-content:space-between;
+    padding:0 var(--space-4);border-bottom:1px solid var(--border-soft);
+    background:rgba(11,17,32,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    position:sticky;top:0;z-index:30;gap:var(--space-3);
+}
+.topbar-title{font-size:1.05rem;font-weight:700;letter-spacing:-0.01em;}
+.topbar-title .crumb{color:var(--text-faint);font-weight:500;font-size:0.8rem;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+
+.menu-toggle{
+    display:none;width:36px;height:36px;align-items:center;justify-content:center;
+    border-radius:var(--radius-sm);border:1px solid var(--border-soft);
+    background:var(--surface);color:var(--text-dim);
+}
+.menu-toggle svg{width:18px;height:18px;stroke:currentColor;}
+
+.live-pill{
+    display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;
+    background:var(--success-soft);border:1px solid rgba(34,197,94,0.25);
+    font-size:0.74rem;font-weight:600;color:#4ADE80;
+}
+.live-pill .dot{
+    width:6px;height:6px;border-radius:50%;background:#4ADE80;
+    box-shadow:0 0 0 0 rgba(74,222,128,0.6);animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot{
+    0%{box-shadow:0 0 0 0 rgba(74,222,128,0.5);}
+    70%{box-shadow:0 0 0 6px rgba(74,222,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(74,222,128,0);}
+}
+
+.notif-wrap{position:relative;}
+.notif-btn{
+    position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    border-radius:var(--radius-sm);border:1px solid var(--border-soft);background:var(--surface);
+    color:var(--text-dim);cursor:pointer;transition:background .15s,color .15s;
+}
+.notif-btn:hover{background:var(--surface-2);color:var(--text);}
+.notif-btn svg{width:18px;height:18px;stroke:currentColor;}
+.notif-badge{
+    position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;
+    border-radius:999px;background:var(--danger);color:#fff;font-size:0.65rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);
+}
+.notif-dropdown{
+    position:absolute;top:calc(100% + 10px);right:0;width:340px;max-width:90vw;
+    background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius);
+    box-shadow:var(--shadow-soft);z-index:50;display:none;overflow:hidden;
+}
+.notif-dropdown.open{display:block;}
+.notif-dropdown-header{
+    padding:13px 16px;border-bottom:1px solid var(--border-soft);
+    display:flex;align-items:center;justify-content:space-between;
+}
+.notif-dropdown-header h4{font-size:0.85rem;font-weight:700;}
+.notif-dropdown-header span{font-size:0.72rem;color:var(--text-faint);}
+.notif-list{max-height:360px;overflow-y:auto;}
+.notif-item{
+    padding:12px 16px;border-bottom:1px solid var(--border-soft);display:flex;gap:10px;align-items:flex-start;
+}
+.notif-item:last-child{border-bottom:none;}
+.notif-item .notif-icon{
+    width:32px;height:32px;border-radius:var(--radius-sm);background:var(--warning-soft);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.95rem;
+}
+.notif-item .notif-body{flex:1;min-width:0;}
+.notif-item .notif-title{font-size:0.82rem;font-weight:600;color:var(--text);}
+.notif-item .notif-meta{font-size:0.74rem;color:var(--text-faint);margin-top:2px;}
+.notif-item .notif-actions{display:flex;gap:6px;margin-top:8px;}
+.notif-item .notif-actions a{
+    font-size:0.72rem;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;
+}
+.notif-empty{padding:28px 16px;text-align:center;color:var(--text-faint);font-size:0.82rem;}
+.notif-dropdown-footer{padding:10px 16px;border-top:1px solid var(--border-soft);text-align:center;}
+.notif-dropdown-footer a{font-size:0.78rem;font-weight:600;color:var(--accent);}
+
+main{flex:1;padding:var(--space-4);max-width:1600px;width:100%;margin:0 auto;}
+
+.alerts{margin-bottom:var(--space-3);display:flex;flex-direction:column;gap:10px;}
+.alert{
+    display:flex;align-items:flex-start;gap:10px;padding:13px 16px;
+    border-radius:var(--radius-sm);border:1px solid var(--border-soft);
+    font-size:0.875rem;background:var(--surface);
+}
+.alert button{margin-left:auto;background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0;}
+.alert-success{background:var(--success-soft);border-color:rgba(34,197,94,0.25);color:#86EFAC;}
+.alert-error{background:var(--danger-soft);border-color:rgba(239,68,68,0.25);color:#FCA5A5;}
+.alert-warning{background:var(--warning-soft);border-color:rgba(245,158,11,0.25);color:#FCD34D;}
+.alert-info{background:var(--accent-soft);border-color:rgba(59,130,246,0.25);color:#93C5FD;}
+
+.card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius);box-shadow:var(--shadow-soft);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-3) 0;gap:var(--space-2);}
+.card-header h3{font-size:0.95rem;font-weight:600;letter-spacing:-0.01em;}
+.card-header .subtitle{font-size:0.78rem;color:var(--text-faint);margin-top:2px;}
+.card-body{padding:var(--space-3);}
+
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 16px;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:600;
+    border:1px solid transparent;cursor:pointer;transition:all .15s ease;
+}
+.btn svg{width:15px;height:15px;stroke:currentColor;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#2563EB;box-shadow:0 4px 14px -4px rgba(59,130,246,0.5);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{background:#DC2626;}
+.btn-success{background:var(--success);color:#08130B;}
+.btn-success:hover{background:#16A34A;}
+.btn-secondary{background:var(--surface-2);color:var(--text);border-color:var(--border-soft);}
+.btn-secondary:hover{background:#1C2638;}
+.btn-ghost{background:transparent;color:var(--text-dim);border-color:var(--border-soft);}
+.btn-ghost:hover{background:var(--surface-2);color:var(--text);}
+.btn-sm{padding:7px 12px;font-size:0.78rem;}
+.btn-block{width:100%;}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:0.7rem;font-weight:600;letter-spacing:0.01em;}
+.badge-super{background:var(--warning-soft);color:#FCD34D;}
+.badge-admin{background:var(--danger-soft);color:#FCA5A5;}
+.badge-manager{background:var(--accent-soft);color:#93C5FD;}
+.badge-user{background:var(--success-soft);color:#86EFAC;}
+.badge-guest{background:var(--surface-2);color:var(--text-faint);}
+
+.table-container{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border-soft);}
+.data-table{width:100%;border-collapse:collapse;font-size:0.84rem;}
+.data-table th{
+    text-align:left;padding:11px 14px;background:var(--surface-2);color:var(--text-faint);
+    font-weight:600;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;
+    border-bottom:1px solid var(--border-soft);white-space:nowrap;
+}
+.data-table td{padding:12px 14px;border-bottom:1px solid var(--border-soft);color:var(--text-dim);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(255,255,255,0.015);}
+
+.form-group{margin-bottom:var(--space-2);}
+.form-group label{display:block;margin-bottom:7px;font-weight:600;font-size:0.82rem;color:var(--text-dim);}
+.form-group input,.form-group select,.form-group textarea{
+    width:100%;padding:11px 13px;background:var(--surface-2);border:1px solid var(--border-soft);
+    border-radius:var(--radius-sm);color:var(--text);font-size:0.875rem;font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-faint);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+    outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);
+}
+.form-group input[type="checkbox"],.form-group input[type="radio"]{width:auto;margin-right:8px;}
+
+.text-center{text-align:center;}
+.mt-2{margin-top:var(--space-2);}
+.text-muted{color:var(--text-faint);font-size:0.85rem;}
+
+.auth-container{
+    max-width:440px;margin:6vh auto;background:var(--surface);border:1px solid var(--border-soft);
+    padding:var(--space-4);border-radius:var(--radius);box-shadow:var(--shadow-soft);
+}
+
+.page-title{margin-bottom:var(--space-3);}
+.page-title h1{font-size:1.4rem;font-weight:700;letter-spacing:-0.01em;}
+.page-title p{color:var(--text-faint);margin-top:4px;font-size:0.875rem;}
+
+.page-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:var(--space-3);}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:600;color:var(--text-dim);transition:color .15s ease;}
+.back-link:hover{color:var(--accent);text-decoration:none;}
+.back-link svg{width:16px;height:16px;stroke:currentColor;flex-shrink:0;}
+.breadcrumb-nav{display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--text-faint);flex-wrap:wrap;}
+.breadcrumb-nav a{color:var(--text-faint);transition:color .15s ease;}
+.breadcrumb-nav a:hover{color:var(--accent);text-decoration:underline;}
+.breadcrumb-nav .crumb-sep{color:var(--text-faint);opacity:.6;}
+.breadcrumb-nav .crumb-current{color:var(--text);font-weight:600;}
+
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:35;}
+
+@media (max-width: 980px){
+    .sidebar{transform:translateX(-100%);}
+    .sidebar.open{transform:translateX(0);}
+    .sidebar.open ~ .sidebar-overlay{display:block;}
+    .main-col{margin-left:0;}
+    .menu-toggle{display:flex;}
+    main{padding:var(--space-3);}
+}
+.app-footer{
+    flex-shrink:0;
+    padding:14px 28px;
+    border-top:1px solid var(--border-soft);
+    font-size:0.78rem;
+    color:var(--text-muted, #8a8f98);
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.app-footer-sep{opacity:0.5;}
+</style>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="mark">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="name">ZeroTrustX<small>Security Operations</small></div>
+        </div>
+
+        <nav class="sidebar-nav">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('admin_dashboard') if (current_user.is_super_admin or current_user.role == 'admin') else (url_for('manager_dashboard') if current_user.role == 'manager' else url_for('dashboard')) }}" class="nav-item {{ 'active' if request.endpoint in ['dashboard','admin_dashboard','manager_dashboard'] else '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="{{ url_for('logout') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+            </a>
+            {% if current_user.is_super_admin or current_user.role == 'admin' %}
+            <a href="{{ url_for('soc_dashboard') }}" class="nav-item {{ 'active' if request.endpoint == 'soc_dashboard' else '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                SOC Dashboard
+            </a>
+            {% endif %}
+            {% endif %}
+        </nav>
+
+        {% if current_user.is_authenticated %}
+        <div class="sidebar-footer">
+            <div class="user-chip">
+                <div class="avatar">{{ current_user.username[:2].upper() }}</div>
+                <div class="meta">
+                    <div class="uname">{{ current_user.username }}</div>
+                    <div class="urole">{{ current_user.role }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-col">
+        <header class="topbar">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="topbar-title">
+                    {% block page_title %}ZeroTrustX{% endblock %}
+                    <div class="crumb">{% block page_crumb %}{% endblock %}</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                {% if current_user.is_authenticated %}
+                {% if pending_device_count is defined and pending_device_count > 0 %}
+                <div class="notif-wrap" id="notifWrap">
+                    <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-badge">{{ pending_device_count if pending_device_count < 10 else '9+' }}</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <h4>Pending device approvals</h4>
+                            <span>{{ pending_device_count }} waiting</span>
+                        </div>
+                        <div class="notif-list">
+                            {% for device in pending_device_notifications %}
+                            <div class="notif-item">
+                                <div class="notif-icon">⏳</div>
+                                <div class="notif-body">
+                                    <div class="notif-title">{{ device.user.username if device.user else 'Unknown user' }} — new device</div>
+                                    <div class="notif-meta">{{ device.browser }} on {{ device.os }} · {{ device.ip_address }}</div>
+                                    <div class="notif-actions">
+                                        <a href="{{ url_for('trust_device', device_id=device.id) }}" class="btn btn-success btn-sm">Approve</a>
+                                        <a href="{{ url_for('revoke_device', device_id=device.id) }}" class="btn btn-ghost btn-sm" onclick="return confirm('Reject this device?')">Reject</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="notif-empty">No pending approvals</div>
+                            {% endfor %}
+                        </div>
+                        <div class="notif-dropdown-footer">
+                            <a href="{{ url_for('admin_dashboard') if current_user.role == 'admin' or current_user.is_super_admin else url_for('manager_dashboard') }}">View all in dashboard</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="live-pill"><span class="dot"></span>Live</div>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-ghost btn-sm">Sign in</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Register</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main>
+            {% block breadcrumb %}{% endblock %}
+            <div class="alerts">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                            <button onclick="this.parentElement.style.display='none';" aria-label="Dismiss">&times;</button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="app-footer">
+            <span>© {{ now.year if now else '' }} ZeroTrustX — Zero Trust Network Access</span>
+            <span class="app-footer-sep">·</span>
+            <span>Continuous verification active</span>
+        </footer>
+    </div>
+</div>
+
+<script>
+(function(){
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var toggle = document.getElementById('menuToggle');
+    function close(){ sidebar.classList.remove('open'); }
+    if(toggle){ toggle.addEventListener('click', function(){ sidebar.classList.toggle('open'); }); }
+    if(overlay){ overlay.addEventListener('click', close); }
+
+    document.querySelectorAll('.alert button').forEach(function(btn){
+        btn.addEventListener('click', function(){ this.parentElement.style.display='none'; });
+    });
+    document.querySelectorAll('.alert').forEach(function(alert){
+        setTimeout(function(){ alert.style.display='none'; }, 6000);
+    });
+
+    var notifBtn = document.getElementById('notifBtn');
+    var notifDropdown = document.getElementById('notifDropdown');
+    var notifWrap = document.getElementById('notifWrap');
+    if(notifBtn && notifDropdown){
+        notifBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            notifDropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', function(e){
+            if(notifWrap && !notifWrap.contains(e.target)){ notifDropdown.classList.remove('open'); }
+        });
+    }
+})();
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

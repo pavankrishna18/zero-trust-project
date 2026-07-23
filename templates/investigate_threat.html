@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Investigate Threat{% endblock %}
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('security_analytics') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Threat Center
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('security_analytics') }}">Threat Center</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Threat #{{ threat.id }}</span>
+    </nav>
+</div>
+{% endblock %}
+{% block content %}
+  <h2>Investigate Threat #{{ threat.id }}</h2>
+  <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="new_status">Change Status:</label>
+    <select name="new_status">
+      <option value="RESOLVED">Resolved</option>
+      <option value="BLOCKED">Blocked</option>
+    </select>
+    <br>
+    <label for="notes">Notes:</label>
+    <textarea name="notes">{{ threat.investigation_notes }}</textarea>
+    <br>
+    <button type="submit">Update</button>
+  </form>
+{% endblock %}

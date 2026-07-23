@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}SOC Dashboard - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">SOC Dashboard</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="security-analytics">
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1>🛰️ SOC Dashboard</h1>
+            <p class="subtitle">Threat Prevention Engine — Detect → AI Analysis → Risk Score → Policy → Decision → Auto Block → Alert</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card critical">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-content">
+                <h3>Events (24h)</h3>
+                <p class="stat-value">{{ total }}</p>
+                <small>All severities</small>
+            </div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-icon">⛔</div>
+            <div class="stat-content">
+                <h3>Auto-Blocked</h3>
+                <p class="stat-value">{{ decision_counts.get('auto_block', 0) }}</p>
+                <small>Policy engine decision</small>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-icon">🔔</div>
+            <div class="stat-content">
+                <h3>Alerted</h3>
+                <p class="stat-value">{{ decision_counts.get('alert', 0) }}</p>
+                <small>Sent to admin feed</small>
+            </div>
+        </div>
+        <div class="stat-card info">
+            <div class="stat-icon">📝</div>
+            <div class="stat-content">
+                <h3>Pending Admin Review</h3>
+                <p class="stat-value">{{ pending_review_count }}</p>
+                <small>Not yet investigated</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card" style="margin-top: 1.5rem;">
+        <h2>Recent Threat Events</h2>
+        <div class="table-responsive">
+        <table class="analytics-table">
+            <thead>
+                <tr>
+                    <th>Time</th><th>Type</th><th>Severity</th><th>Source IP</th>
+                    <th>User</th><th>Decision</th><th>Status</th><th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in events %}
+                <tr>
+                    <td>{{ t.detected_at.strftime('%Y-%m-%d %H:%M') if t.detected_at else '-' }}</td>
+                    <td>{{ t.threat_type }}</td>
+                    <td><span class="badge badge-{{ 'danger' if t.severity in ['critical','high'] else ('warning' if t.severity == 'medium' else 'info') }}">{{ t.severity }}</span></td>
+                    <td>{{ t.source_ip or '-' }}</td>
+                    <td>{{ t.target_username or '-' }}</td>
+                    <td>{{ t.response_action or 'monitor' }}</td>
+                    <td>
+                        {% if t.is_investigated %}
+                            <span class="badge badge-success">Reviewed{% if t.is_false_positive %} (false positive){% endif %}</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not t.is_investigated %}
+                        <form method="POST" action="{{ url_for('soc_dashboard_review', threat_id=t.id) }}" style="display:flex; gap:4px; align-items:center;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="text" name="notes" placeholder="notes" style="width:110px; padding:0.3rem 0.5rem; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface-2); color:var(--text);">
+                            <button type="submit" class="btn btn-secondary btn-sm">Review</button>
+                        </form>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="text-muted" style="text-align:center; padding:1.5rem;">No threat events in the last 24 hours.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .security-analytics {
+        padding: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .header-content h1 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text);
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        margin: 0;
+        color: var(--text-dim);
+        font-size: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        border-left: 4px solid var(--border-soft);
+    }
+
+    .stat-card.critical { border-left-color: var(--danger); }
+    .stat-card.danger { border-left-color: #e74a3b; }
+    .stat-card.warning { border-left-color: #f6c23e; }
+    .stat-card.info { border-left-color: var(--accent); }
+
+    .stat-icon { font-size: 2.5rem; }
+
+    .stat-content h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    .stat-value {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .stat-content small {
+        color: var(--text-faint);
+        font-size: 0.75rem;
+    }
+
+    .section-card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .section-card h2 {
+        margin: 0 0 1.5rem 0;
+        color: var(--text);
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--surface-2);
+    }
+
+    .table-responsive { overflow-x: auto; }
+
+    .analytics-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .analytics-table th {
+        background: var(--surface-2);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid var(--border-soft);
+        color: var(--text);
+    }
+
+    .analytics-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-soft);
+    }
+
+    .analytics-table tr:hover { background: var(--surface-2); }
+
+    .badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 0.2rem;
+    }
+
+    .badge-success { background: var(--success-soft); color: #86EFAC; }
+    .badge-danger { background: var(--danger-soft); color: #FCA5A5; }
+    .badge-warning { background: var(--warning-soft); color: #FCD34D; }
+    .badge-info { background: var(--accent-soft); color: #93C5FD; }
+
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    .btn-secondary { background: var(--surface-2); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
+    .btn-secondary:hover { background: #1c2638; }
+
+    .text-muted { color: var(--text-faint); }
+</style>
+{% endblock %}

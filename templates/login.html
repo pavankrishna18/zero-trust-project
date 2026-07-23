@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Login - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <h1>Login to ZeroTrustX</h1>
+        
+        <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+            <p><a href="{{ url_for('index') }}">Back to Home</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-page {
+        padding: 3rem 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 80px);
+    }
+
+    .auth-container {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .auth-container h1 {
+        text-align: center;
+        color: var(--text);
+        margin-bottom: 2rem;
+    }
+
+    .auth-form {
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--text);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.7rem;
+        border: 1px solid var(--border-soft);
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 0.8rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #2563eb;
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .auth-footer {
+        text-align: center;
+    }
+
+    .auth-footer p {
+        color: var(--text-dim);
+        margin: 0.5rem 0;
+    }
+
+    .auth-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

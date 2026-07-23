@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="auth-form">
+    <h2>Two-Factor Authentication</h2>
+    {% if step_up %}
+    <p>🔒 Your session triggered continuous verification and needs to be re-confirmed.</p>
+    {% if step_up_reason %}<p style="color:var(--danger,#c0392b);font-size:0.9em;">{{ step_up_reason }}</p>{% endif %}
+    {% else %}
+    <p>Enter the 6-digit code from your authenticator app</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('verify_otp') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label for="otp">OTP Code</label>
+            <input type="text" id="otp" name="otp" maxlength="6" pattern="[0-9]{6}" required autofocus>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+</div>
+{% endblock %}

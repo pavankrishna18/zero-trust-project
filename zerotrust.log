@@ -1,0 +1,214 @@
+2026-06-30 20:14:40,744 - INFO - ✅ Database tables created successfully
+2026-06-30 20:14:40,774 - INFO - ✅ Default access rules created
+2026-06-30 20:14:40,781 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:14:40,895 - INFO - User admin registered successfully with role admin
+2026-06-30 20:14:40,900 - INFO - ✅ Super admin account created successfully
+2026-06-30 20:14:53,313 - INFO - ✅ Database tables created successfully
+2026-06-30 20:14:53,496 - INFO - ✅ Default access rules created
+2026-06-30 20:14:53,680 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:14:54,056 - INFO - User admin registered successfully with role admin
+2026-06-30 20:14:54,252 - INFO - ✅ Super admin account created successfully
+2026-06-30 20:15:01,020 - INFO - ✅ Database tables created successfully
+2026-06-30 20:15:01,047 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:15:01,086 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:15:01,189 - INFO - User admin authenticated successfully
+2026-06-30 20:15:01,199 - INFO - Risk score for admin: 42 (MEDIUM) - Factors: ['New location detected', 'First device registration']
+2026-06-30 20:15:01,211 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-06-30 20:15:07,380 - INFO - ✅ Database tables created successfully
+2026-06-30 20:15:07,408 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:15:07,451 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:15:07,557 - INFO - User admin authenticated successfully
+2026-06-30 20:15:07,567 - INFO - Risk score for admin: 42 (MEDIUM) - Factors: ['New location detected', 'First device registration']
+2026-06-30 20:15:07,578 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-06-30 20:15:07,586 - INFO - OTP verified successfully
+2026-06-30 20:15:07,593 - INFO - New device registered for user admin: eec2cdc3de
+2026-06-30 20:15:07,604 - INFO - JWT token generated for user 1
+2026-06-30 20:15:07,604 - INFO - Session created for user admin
+2026-06-30 20:15:07,606 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:15:07,615 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-06-30 20:15:07,654 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:15:12,184 - INFO - ✅ Database tables created successfully
+2026-06-30 20:15:12,211 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:22:26,420 - INFO - ✅ Database tables created successfully
+2026-06-30 20:22:26,450 - INFO - ✅ Default access rules created
+2026-06-30 20:22:26,456 - INFO - ✅ Default IPs added to whitelist
+2026-06-30 20:22:26,564 - INFO - User admin registered successfully with role admin
+2026-06-30 20:22:26,569 - INFO - ✅ Super admin account created successfully
+2026-06-30 20:22:26,605 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:22:26,704 - INFO - User admin authenticated successfully
+2026-06-30 20:22:26,714 - INFO - Risk score for admin: 42 (MEDIUM) - Factors: ['New location detected', 'First device registration']
+2026-06-30 20:22:26,724 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-06-30 20:22:26,732 - INFO - OTP verified successfully
+2026-06-30 20:22:26,738 - INFO - New device registered for user admin: eec2cdc3de
+2026-06-30 20:22:26,749 - INFO - JWT token generated for user 1
+2026-06-30 20:22:26,749 - INFO - Session created for user admin
+2026-06-30 20:22:26,752 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-06-30 20:22:26,759 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-06-30 20:22:26,797 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-01 01:52:59,969 - INFO - ✅ Database tables created successfully
+2026-07-01 01:53:00,036 - INFO - ✅ Default IPs added to whitelist
+2026-07-01 01:53:00,067 - INFO - ✅ ZeroTrustX Enterprise Edition started
+2026-07-01 01:53:04,051 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-01 01:53:04,065 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-01 01:53:12,132 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-01 01:53:17,832 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:01:06,752 - INFO - ✅ Database tables created successfully
+2026-07-02 23:01:06,802 - INFO - ✅ Default IPs added to whitelist
+2026-07-02 23:01:06,831 - INFO - ✅ ZeroTrustX Enterprise Edition started
+2026-07-02 23:01:24,512 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:01:24,635 - INFO - User admin authenticated successfully
+2026-07-02 23:01:24,644 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:01:24,659 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-07-02 23:01:37,580 - INFO - OTP verified successfully
+2026-07-02 23:01:37,586 - INFO - Device 967a142671 already registered, updated last_used
+2026-07-02 23:01:37,599 - INFO - JWT token generated for user 1
+2026-07-02 23:01:37,599 - INFO - Session created for user admin
+2026-07-02 23:01:37,605 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:01:37,613 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:07:45,235 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:07:45,240 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:15:23,452 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:15:23,573 - INFO - User admin authenticated successfully
+2026-07-02 23:15:23,577 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:15:23,588 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-07-02 23:17:27,857 - INFO - User Pavank registered successfully with role user
+2026-07-02 23:17:27,901 - INFO - User Pavank registered successfully
+2026-07-02 23:18:38,922 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:18:39,049 - INFO - User Pavank authenticated successfully
+2026-07-02 23:18:39,051 - INFO - Risk score for Pavank: 42 (MEDIUM) - Factors: ['New location detected', 'First device registration']
+2026-07-02 23:18:39,062 - INFO - ✅ User Pavank authenticated from 127.0.0.1
+2026-07-02 23:19:07,645 - INFO - OTP verified successfully
+2026-07-02 23:19:07,652 - INFO - New device registered for user Pavank: b43aabebe4
+2026-07-02 23:19:07,659 - INFO - JWT token generated for user 3
+2026-07-02 23:19:07,659 - INFO - Session created for user Pavank
+2026-07-02 23:19:07,668 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:19:07,671 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:19:38,415 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:20:08,417 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:20:08,420 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:20:38,419 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:21:08,413 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:21:38,419 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:21:38,424 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:21:41,927 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:21:42,064 - INFO - User admin authenticated successfully
+2026-07-02 23:21:42,066 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:21:42,077 - INFO - ✅ User admin authenticated from 127.0.0.1
+2026-07-02 23:21:54,661 - INFO - OTP verified successfully
+2026-07-02 23:21:54,675 - INFO - Device 967a142671 already registered, updated last_used
+2026-07-02 23:21:54,687 - INFO - JWT token generated for user 1
+2026-07-02 23:21:54,688 - INFO - Session created for user admin
+2026-07-02 23:21:54,693 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:21:54,700 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:22:08,427 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:22:37,711 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:08,412 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:08,415 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:23:23,102 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:23,109 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:23:33,564 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:33,605 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:36,281 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:23:38,422 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:24:35,428 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:24:35,431 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:25:28,349 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:25:28,352 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:25:30,546 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:25:35,414 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:26:35,417 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:26:35,420 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:26:37,104 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:26:37,109 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:26:39,572 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:27:35,424 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:27:35,426 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:28:19,563 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:28:19,569 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:28:24,334 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:28:35,416 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:28:38,236 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:28:42,001 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:28:44,573 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:29:35,420 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:29:35,423 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:30:35,429 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:30:35,432 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:31:35,419 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:32:35,424 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:32:35,428 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:32:41,166 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:32:41,175 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:32:43,896 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:33:34,520 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:33:35,422 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:33:36,158 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:34:35,418 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:34:35,421 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:34:36,477 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:34:36,483 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:34:39,454 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:35:35,426 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:35:35,429 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:36:35,427 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:00,346 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:00,351 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-02 23:37:02,303 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:04,585 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:07,405 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:35,419 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:37:35,426 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:38:35,419 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:39:35,415 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:39:35,422 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:40:35,426 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:40:35,429 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:41:35,422 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:42:35,430 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:42:35,435 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:43:35,739 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:43:35,743 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:44:35,423 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:45:35,429 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:45:35,431 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:46:35,430 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:46:35,444 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:47:35,427 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:48:35,434 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:48:35,449 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:49:35,430 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:50:35,437 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:50:35,456 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:51:35,433 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:52:35,428 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:52:35,443 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:53:35,420 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:54:35,420 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:54:35,427 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:55:35,432 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:55:35,447 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:56:35,425 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:57:35,440 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:57:35,454 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-02 23:58:35,425 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:59:35,429 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-02 23:59:35,446 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-03 00:00:35,433 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:01:35,443 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:01:35,458 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-03 00:02:35,424 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:03:35,442 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:03:35,458 - INFO - Risk score for Pavank: 55 (MEDIUM) - Factors: ['New location detected', 'New unverified device']
+2026-07-03 00:04:06,302 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:10,864 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:21,475 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:21,492 - INFO - Risk score for admin: 30 (LOW) - Factors: ['New location detected']
+2026-07-03 00:04:23,237 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:25,190 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:25,252 - INFO - Device 6 marked as trusted
+2026-07-03 00:04:25,272 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:27,770 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:33,354 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:33,388 - INFO - ✅ IP 127.0.0.1 allowed (exact match)
+2026-07-03 00:04:33,644 - INFO - Client connected: 0N6UWYIMns9UvR5yAAAB
+2026-07-03 01:05:24,106 - INFO - Client disconnected: 0N6UWYIMns9UvR5yAAAB

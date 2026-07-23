@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}Device Pending Approval - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="pending-wrapper">
+    <div class="pending-container">
+        <div class="pending-card">
+            <!-- Icon -->
+            <div class="pending-icon">
+                ⏳
+            </div>
+            
+            <!-- Message -->
+            <h1>Device Pending Approval</h1>
+            <p class="pending-message">
+                Your device has been registered but is waiting for administrator approval.
+            </p>
+            
+            <!-- Device Info -->
+            <div class="device-info-box">
+                <h3>📱 Your Device Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Browser:</span>
+                        <span class="info-value">{{ device.browser if device else 'Unknown' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Operating System:</span>
+                        <span class="info-value">{{ device.os if device else 'Unknown' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">IP Address:</span>
+                        <span class="info-value">{{ device.ip_address if device else 'Unknown' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value status-pending">⏳ Pending Approval</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="instructions-box">
+                <h3>📋 What Happens Next?</h3>
+                <ul class="instructions-list">
+                    <li>✅ Your device has been securely registered</li>
+                    <li>⏳ An administrator will review your device</li>
+                    <li>📧 You'll be notified once approved</li>
+                    <li>🔓 After approval, you can access all resources</li>
+                </ul>
+            </div>
+            
+            <!-- Actions -->
+            <div class="actions">
+                <button class="btn-refresh" onclick="checkApproval()">
+                    🔄 Check Approval Status
+                </button>
+                <a href="{{ url_for('logout') }}" class="btn-logout">
+                    🚪 Logout
+                </a>
+            </div>
+            
+            <!-- Contact Admin -->
+            <div class="contact-box">
+                <p>Need immediate access? Contact your administrator.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pending-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .pending-container {
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .pending-card {
+        background: var(--surface);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .pending-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .pending-card h1 {
+        margin: 0 0 1rem 0;
+        color: var(--text);
+        font-size: 2rem;
+    }
+
+    .pending-message {
+        color: var(--text-dim);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .device-info-box {
+        background: var(--surface-2);
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .device-info-box h3 {
+        margin: 0 0 1rem 0;
+        color: var(--text);
+        text-align: center;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8rem;
+        background: var(--surface);
+        border-radius: 8px;
+        border: 2px solid var(--border-soft);
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--text-dim);
+    }
+
+    .info-value {
+        color: var(--text);
+        font-weight: 500;
+    }
+
+    .status-pending {
+        color: var(--warning);
+        font-weight: 700;
+    }
+
+    .instructions-box {
+        background: var(--warning-soft);
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: left;
+        border: 2px solid var(--warning);
+    }
+
+    .instructions-box h3 {
+        margin: 0 0 1rem 0;
+        color: #FCD34D;
+    }
+
+    .instructions-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .instructions-list li {
+        padding: 0.5rem 0;
+        color: #FCD34D;
+        font-weight: 500;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-refresh, .btn-logout {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-refresh {
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        color: white;
+    }
+
+    .btn-refresh:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-logout {
+        background: var(--surface-2);
+        color: white;
+    }
+
+    .btn-logout:hover {
+        background: #1c2638;
+    }
+
+    .contact-box {
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--border-soft);
+    }
+
+    .contact-box p {
+        margin: 0;
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .pending-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+
+        .pending-icon {
+            font-size: 4rem;
+        }
+    }
+</style>
+
+<script>
+function checkApproval() {
+    // Show loading state
+    const btn = document.querySelector('.btn-refresh');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Checking...';
+    btn.disabled = true;
+    
+    // Reload page after 1 second
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Auto-check every 30 seconds
+setInterval(() => {
+    console.log('Auto-checking device approval status...');
+    fetch('/api/check-device-status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.is_trusted) {
+                console.log('Device approved! Redirecting...');
+                location.href = '/dashboard';
+            }
+        })
+        .catch(error => console.error('Error checking status:', error));
+}, 30000);
+</script>
+{% endblock %}

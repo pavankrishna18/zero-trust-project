@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}AI Center - ZeroTrustX{% endblock %}
+{% block page_title %}AI Center{% endblock %}
+{% block page_crumb %}Automated security recommendations{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">AI Center</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <h1>🤖 AI Center</h1>
+    <p>Rule-based recommendation engine evaluating live security signals.</p>
+</div>
+
+<div class="card" style="margin-bottom:var(--space-3);">
+    <div class="card-header">
+        <div>
+            <h3>Overall Security Score</h3>
+            <div class="subtitle">Derived from current risk indicators</div>
+        </div>
+        <span class="badge {{ 'badge-user' if security_score.level == 'excellent' else 'badge-manager' if security_score.level == 'good' else 'badge-admin' if security_score.level in ['weak','critical'] else 'badge-guest' }}">
+            Grade {{ security_score.grade }}
+        </span>
+    </div>
+    <div class="card-body">
+        <p style="font-size:2rem;font-weight:700;">{{ security_score.score }}<span style="font-size:1rem;color:var(--text-faint);">/100</span></p>
+        <ul style="margin-top:10px;color:var(--text-dim);font-size:0.85rem;line-height:1.8;">
+            {% for f in security_score.factors %}
+            <li>{{ f.label }}{% if f.impact %} <span style="color:var(--danger);">({{ f.impact }})</span>{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3>Recommendations</h3>
+            <div class="subtitle">Ordered by severity, highest impact first</div>
+        </div>
+    </div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+        {% for rec in recommendations %}
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--border-soft);">
+            <span class="badge {{ 'badge-admin' if rec.severity == 'danger' else 'badge-manager' if rec.severity in ['warning','info'] else 'badge-user' }}">
+                {{ rec.severity|upper }}
+            </span>
+            <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">{{ rec.title }}</div>
+                <div style="color:var(--text-dim);font-size:0.84rem;margin-top:4px;">{{ rec.detail }}</div>
+            </div>
+            {% if rec.action_endpoint %}
+            <a href="{{ url_for(rec.action_endpoint) }}" class="btn btn-secondary btn-sm" style="flex-shrink:0;">{{ rec.action_label }}</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

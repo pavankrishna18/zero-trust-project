@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+
+{% block title %}Security Analytics - ZeroTrustX{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Threat Center</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="security-analytics">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1>🔍 Security Analytics Dashboard</h1>
+            <p class="subtitle">Advanced Threat Intelligence & Risk Assessment</p>
+        </div>
+    </div>
+
+    <!-- Security Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card critical">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-content">
+                <h3>Total Risk Assessments</h3>
+                <p class="stat-value">{{ stats.total_risk_assessments }}</p>
+                <small>All-time records</small>
+            </div>
+        </div>
+
+        <div class="stat-card danger">
+            <div class="stat-icon">🔴</div>
+            <div class="stat-content">
+                <h3>High Risk Logins</h3>
+                <p class="stat-value">{{ stats.high_risk_logins }}</p>
+                <small>Risk score ≥ 70</small>
+            </div>
+        </div>
+
+        <div class="stat-card warning">
+            <div class="stat-icon">🐛</div>
+            <div class="stat-content">
+                <h3>Total Threats</h3>
+                <p class="stat-value">{{ stats.total_threats }}</p>
+                <small>Detected threats</small>
+            </div>
+        </div>
+
+        <div class="stat-card info">
+            <div class="stat-icon">❗</div>
+            <div class="stat-content">
+                <h3>Unresolved Threats</h3>
+                <p class="stat-value">{{ stats.unresolved_threats }}</p>
+                <small>Needs investigation</small>
+            </div>
+        </div>
+
+        <div class="stat-card blocked">
+            <div class="stat-icon">🚫</div>
+            <div class="stat-content">
+                <h3>Blocked IPs</h3>
+                <p class="stat-value">{{ stats.blocked_ips }}</p>
+                <small>Auto-blocked addresses</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="analytics-tabs">
+        <button class="tab-btn active" onclick="switchAnalyticsTab('risk-assessments')">
+            ⚠️ Risk Assessments
+        </button>
+        <button class="tab-btn" onclick="switchAnalyticsTab('threat-events')">
+            🐛 Threat Events
+        </button>
+        <button class="tab-btn" onclick="switchAnalyticsTab('login-history')">
+            🌍 Login History
+        </button>
+    </div>
+
+    <!-- Risk Assessments Tab -->
+    <div class="analytics-tab-content active" id="risk-assessments">
+        <div class="section-card">
+            <h2>⚠️ Risk Assessments (Last 24 Hours)</h2>
+            
+            {% if risk_assessments %}
+            <div class="table-responsive">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Risk Score</th>
+                            <th>Risk Level</th>
+                            <th>Action</th>
+                            <th>Location</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assessment in risk_assessments %}
+                        <tr>
+                            <td>{{ assessment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td><strong>{{ assessment.username }}</strong></td>
+                            <td>
+                                <span class="risk-score score-{{ assessment.risk_score }}">
+                                    {{ assessment.risk_score }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if assessment.risk_level == 'CRITICAL' %}
+                                <span class="badge badge-critical">🔴 CRITICAL</span>
+                                {% elif assessment.risk_level == 'HIGH' %}
+                                <span class="badge badge-danger">⚠️ HIGH</span>
+                                {% elif assessment.risk_level == 'MEDIUM' %}
+                                <span class="badge badge-warning">🟡 MEDIUM</span>
+                                {% else %}
+                                <span class="badge badge-success">🟢 LOW</span>
+                                {% endif %}
+                            </td>
+                            <td><code>{{ assessment.action }}</code></td>
+                            <td>
+                                {% if assessment.location_city %}
+                                <small>{{ assessment.location_city }}, {{ assessment.location_country }}</small>
+                                {% elif assessment.location_country %}
+                                <small>{{ assessment.location_country }}</small>
+                                {% else %}
+                                <small class="text-muted">Unknown</small>
+                                {% endif %}
+                            </td>
+                            <td><code>{{ assessment.ip_address }}</code></td>
+                            <td>
+                                {% if assessment.was_blocked %}
+                                <span class="badge badge-danger">🚫 BLOCKED</span>
+                                {% else %}
+                                <span class="badge badge-success">✅ ALLOWED</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>✅ No risk assessments in the last 24 hours</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Threat Events Tab -->
+    <!-- Threat Events Tab -->
+<div class="analytics-tab-content" id="threat-events">
+    <div class="section-card">
+        <h2>🐛 Threat Events (Last 7 Days)</h2>
+        
+        {% if threat_events %}
+        <div class="table-responsive">
+            <table class="analytics-table">
+                <thead>
+                    <tr>
+                        <th>Detected At</th>
+                        <th>Threat Type</th>
+                        <th>Severity</th>
+                        <th>Source IP</th>
+                        <th>Country</th>
+                        <th>Target User</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for threat in threat_events %}
+                    <tr>
+                        <td>{{ threat.detected_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>
+                            <strong>
+                                {% if threat.threat_type == 'brute_force' %}🔨
+                                {% elif threat.threat_type == 'suspicious_login' %}🕵️
+                                {% elif threat.threat_type == 'blocked_country' %}🌍
+                                {% elif threat.threat_type == 'vpn_detected' %}🔒
+                                {% else %}⚠️
+                                {% endif %}
+                                {{ threat.threat_type | replace('_', ' ') | title }}
+                            </strong>
+                        </td>
+                        <td>
+                            {% if threat.severity == 'critical' %}
+                            <span class="badge badge-critical">🔴 CRITICAL</span>
+                            {% elif threat.severity == 'high' %}
+                            <span class="badge badge-danger">⚠️ HIGH</span>
+                            {% elif threat.severity == 'medium' %}
+                            <span class="badge badge-warning">🟡 MEDIUM</span>
+                            {% else %}
+                            <span class="badge badge-info">🔵 LOW</span>
+                            {% endif %}
+                        </td>
+                        <td><code>{{ threat.source_ip }}</code></td>
+                        <td>
+                            {% if threat.source_country %}
+                            <span>{{ threat.source_country }}</span>
+                            {% else %}
+                            <span class="text-muted">Unknown</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if threat.target_username %}
+                            <strong>{{ threat.target_username }}</strong>
+                            {% else %}
+                            <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if threat.was_blocked %}
+                            <span class="badge badge-danger">🚫 BLOCKED</span>
+                            {% endif %}
+                            {% if threat.is_investigated %}
+                            <span class="badge badge-success">✅ INVESTIGATED</span>
+                            {% else %}
+                            <span class="badge badge-warning">⏳ PENDING</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>✅ No threat events in the last 7 days</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+    <!-- Login History Tab -->
+    <div class="analytics-tab-content" id="login-history">
+        <div class="section-card">
+            <h2>🌍 Login History with Geo-Location (Last 7 Days)</h2>
+            
+            {% if recent_logins %}
+            <div class="table-responsive">
+                <table class="analytics-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>IP Address</th>
+                            <th>Location</th>
+                            <th>Device</th>
+                            <th>Risk Score</th>
+                            <th>Status</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for login in recent_logins %}
+                        <tr>
+                            <td>{{ login.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td><strong>{{ login.user.username if login.user else 'Unknown' }}</strong></td>
+                            <td><code>{{ login.ip_address }}</code></td>
+                            <td>
+                                {% if login.city %}
+                                <div class="location-info">
+                                    <strong>{{ login.city }}, {{ login.country }}</strong>
+                                    {% if login.region %}
+                                    <br><small>{{ login.region }}</small>
+                                    {% endif %}
+                                    {% if login.isp %}
+                                    <br><small class="text-muted">ISP: {{ login.isp }}</small>
+                                    {% endif %}
+                                </div>
+                                {% elif login.country %}
+                                <span>{{ login.country }}</span>
+                                {% else %}
+                                <span class="text-muted">Unknown</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if login.user_agent %}
+                                <small>{{ login.user_agent[:50] }}...</small>
+                                {% else %}
+                                <span class="text-muted">Unknown</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if login.risk_score %}
+                                <span class="risk-score score-{{ login.risk_score }}">
+                                    {{ login.risk_score }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if login.success %}
+                                <span class="badge badge-success">✅ SUCCESS</span>
+                                {% else %}
+                                <span class="badge badge-danger">❌ FAILED</span>
+                                {% if login.failure_reason %}
+                                <br><small>{{ login.failure_reason }}</small>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if login.is_proxy %}
+                                <span class="badge badge-warning">🔒 PROXY</span>
+                                {% endif %}
+                                {% if login.is_suspicious %}
+                                <span class="badge badge-danger">⚠️ SUSPICIOUS</span>
+                                {% endif %}
+                                {% if login.is_impossible_travel %}
+                                <span class="badge badge-critical">✈️ IMPOSSIBLE TRAVEL</span>
+                                {% endif %}
+                                {% if login.is_blocked_country %}
+                                <span class="badge badge-danger">🚫 BLOCKED COUNTRY</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>ℹ️ No login history in the last 7 days</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .security-analytics {
+        padding: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+        background: #f5f7fa;
+        min-height: 100vh;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .header-content h1 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text);
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        margin: 0;
+        color: var(--text-dim);
+        font-size: 1rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        border-left: 4px solid var(--border-soft);
+    }
+
+    .stat-card.critical { border-left-color: var(--danger); }
+    .stat-card.danger { border-left-color: #e74a3b; }
+    .stat-card.warning { border-left-color: #f6c23e; }
+    .stat-card.info { border-left-color: var(--accent); }
+    .stat-card.blocked { border-left-color: var(--text-faint); }
+
+    .stat-icon {
+        font-size: 2.5rem;
+    }
+
+    .stat-content h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        color: var(--text-dim);
+    }
+
+    .stat-value {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .stat-content small {
+        color: var(--text-faint);
+        font-size: 0.75rem;
+    }
+
+    .analytics-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        background: var(--surface);
+        padding: 0.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .tab-btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        background: var(--surface-2);
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        color: var(--text-dim);
+        flex: 1;
+    }
+
+    .tab-btn:hover {
+        background: var(--border-soft);
+    }
+
+    .tab-btn.active {
+        background: var(--accent);
+        color: white;
+    }
+
+    .analytics-tab-content {
+        display: none;
+    }
+
+    .analytics-tab-content.active {
+        display: block;
+    }
+
+    .section-card {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .section-card h2 {
+        margin: 0 0 1.5rem 0;
+        color: var(--text);
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--surface-2);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .analytics-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .analytics-table th {
+        background: var(--surface-2);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid var(--border-soft);
+        color: var(--text);
+    }
+
+    .analytics-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-soft);
+    }
+
+    .analytics-table tr:hover {
+        background: var(--surface-2);
+    }
+
+    .risk-score {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        font-weight: 700;
+    }
+
+    .risk-score.score-0,
+    .risk-score.score-10,
+    .risk-score.score-20,
+    .risk-score.score-30 {
+        background: var(--success-soft);
+        color: #86EFAC;
+    }
+
+    .risk-score.score-40,
+    .risk-score.score-50,
+    .risk-score.score-60 {
+        background: var(--warning-soft);
+        color: #FCD34D;
+    }
+
+    .risk-score.score-70,
+    .risk-score.score-80,
+    .risk-score.score-90,
+    .risk-score.score-100 {
+        background: var(--danger-soft);
+        color: #FCA5A5;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 0.2rem;
+    }
+
+    .badge-success { background: var(--success-soft); color: #86EFAC; }
+    .badge-danger { background: var(--danger-soft); color: #FCA5A5; }
+    .badge-warning { background: var(--warning-soft); color: #FCD34D; }
+    .badge-info { background: var(--accent-soft); color: #93C5FD; }
+    .badge-critical { background: var(--danger); color: white; }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+    }
+
+    .btn-secondary {
+        background: var(--surface-2);
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #1c2638;
+    }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-faint);
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .text-muted {
+        color: var(--text-faint);
+    }
+
+    .location-info {
+        line-height: 1.6;
+    }
+</style>
+
+<script>
+    function switchAnalyticsTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.analytics-tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remove active from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab
+        const tab = document.getElementById(tabName);
+        if (tab) {
+            tab.classList.add('active');
+        }
+        
+        // Add active to clicked button
+        event.target.classList.add('active');
+    }
+</script>
+{% endblock %}

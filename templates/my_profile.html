@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}My Profile - ZeroTrustX{% endblock %}
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Profile</span>
+    </nav>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-container">
+    <h1>👤 My Profile</h1>
+    <p style="color: green; font-weight: 600;">✅ Access Granted - You have permission to view this page</p>
+    
+    <div class="profile-card">
+        <h2>Profile Information</h2>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Role:</strong> {{ user.role }}</p>
+        <p><strong>Department:</strong> {{ user.department }}</p>
+        <p><strong>Account Created:</strong> {{ user.created_at }}</p>
+    </div>
+</div>
+
+<style>
+    .page-container { max-width: 800px; margin: 2rem auto; background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .profile-card { background: var(--surface-2); padding: 1.5rem; border-radius: 8px; margin: 2rem 0; border-left: 4px solid var(--accent); }
+    .profile-card p { margin: 0.8rem 0; }
+</style>
+{% endblock %}

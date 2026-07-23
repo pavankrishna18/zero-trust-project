@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Employee Directory - ZeroTrustX{% endblock %}
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Employee Directory</span>
+    </nav>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-container">
+    <h1>👔 Employee Directory</h1>
+    <p style="color: green; font-weight: 600;">✅ Access Granted - Directory accessible to User, Manager, Admin</p>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+        <thead>
+            <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border-soft);">
+                <th style="padding: 1rem; text-align: left;">Name</th>
+                <th style="padding: 1rem; text-align: left;">Email</th>
+                <th style="padding: 1rem; text-align: left;">Role</th>
+                <th style="padding: 1rem; text-align: left;">Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr style="border-bottom: 1px solid var(--border-soft);">
+                <td style="padding: 1rem;">{{ employee.username }}</td>
+                <td style="padding: 1rem;">{{ employee.email }}</td>
+                <td style="padding: 1rem;">{{ employee.role }}</td>
+                <td style="padding: 1rem;">{{ employee.department }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+
+<style>
+    .page-container { max-width: 1000px; margin: 2rem auto; background: var(--surface); padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+</style>
+{% endblock %}

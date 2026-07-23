@@ -1,0 +1,480 @@
+{% extends "base.html" %}
+
+{% block title %}Device Management - ZeroTrustX{% endblock %}
+{% block page_title %}Device Management{% endblock %}
+{% block page_crumb %}{{ 'Manage trust for every registered device' if can_manage else 'Manage your trusted devices' }}{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    {% if can_manage %}
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">Devices</span>
+    </nav>
+    {% else %}
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">My Devices</span>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="devices-grid">
+        {% if devices %}
+            {% for device in devices %}
+            <div class="device-card" onclick="openAiModal({{ device.id }})" role="button" tabindex="0">
+                <div class="device-header">
+                    <div class="device-icon">
+                        {% if 'Mobile' in device.os or 'iOS' in device.os or 'Android' in device.os %}
+                        📱
+                        {% else %}
+                        💻
+                        {% endif %}
+                    </div>
+                    <div class="device-info">
+                        <h3>{{ device.browser }}</h3>
+                        <p>{{ device.os }}</p>
+                        {% if can_manage and device.user %}
+                        <p class="owner">👤 {{ device.user.username }} <span class="dim-text">({{ device.user.role }})</span></p>
+                        {% endif %}
+                    </div>
+                    <div class="device-status">
+                        {% if device.is_trusted %}
+                        <span class="status-trusted">✅ Trusted</span>
+                        {% else %}
+                        <span class="status-pending">⏳ Pending</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="device-details">
+                    <div class="detail-row">
+                        <span class="label">IP Address:</span>
+                        <span class="value">{{ device.ip_address }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Last Used:</span>
+                        <span class="value">{{ device.last_used.strftime('%Y-%m-%d %H:%M') if device.last_used else 'Never' }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Registered:</span>
+                        <span class="value">{{ device.created_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                </div>
+                <div class="ai-hint">🧠 Click for AI Threat Analysis</div>
+                {% if can_manage %}
+                <div class="device-actions" onclick="event.stopPropagation()">
+                    {% if device.is_trusted %}
+                    <a href="{{ url_for('revoke_device', device_id=device.id) }}" class="btn btn-danger btn-sm btn-block" onclick="return confirm('Untrust this device? The owner will need approval again to use it.')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        Untrust device
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('trust_device', device_id=device.id) }}" class="btn btn-success btn-sm btn-block">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        Approve device
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-devices">
+                <p>📱 No devices found</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .devices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: var(--space-3);
+    }
+
+    .device-card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: var(--space-3);
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-soft);
+        transition: border-color .2s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .device-card:hover {
+        border-color: var(--accent);
+    }
+
+    .device-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: var(--space-2);
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--border-soft);
+    }
+
+    .device-icon {
+        font-size: 2rem;
+        min-width: 48px;
+        text-align: center;
+    }
+
+    .device-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .device-info h3 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1.05rem;
+    }
+
+    .device-info p {
+        margin: 0.25rem 0 0 0;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+    }
+
+    .device-info .owner {
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .dim-text {
+        color: var(--text-faint);
+        font-weight: 400;
+        text-transform: capitalize;
+    }
+
+    .device-status {
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .status-trusted {
+        background: var(--success-soft);
+        color: #86EFAC;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: var(--warning-soft);
+        color: #FCD34D;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .device-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        flex: 1;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+    }
+
+    .detail-row .label {
+        font-weight: 600;
+        color: var(--text-dim);
+    }
+
+    .detail-row .value {
+        color: var(--text);
+    }
+
+    .device-actions {
+        margin-top: var(--space-2);
+        padding-top: var(--space-2);
+        border-top: 1px solid var(--border-soft);
+    }
+
+    .no-devices {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: var(--space-5) var(--space-2);
+        color: var(--text-faint);
+    }
+
+    @media (max-width: 768px) {
+        .devices-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===== AI Analysis Modal ===== */
+    .device-card {
+        cursor: pointer;
+    }
+
+    .ai-hint {
+        margin-top: 0.6rem;
+        font-size: 0.75rem;
+        color: var(--accent, #60A5FA);
+        font-weight: 600;
+        text-align: center;
+        opacity: 0.85;
+    }
+
+    .ai-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .ai-modal-overlay.open {
+        display: flex;
+    }
+
+    .ai-modal {
+        background: var(--surface);
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius, 10px);
+        max-width: 560px;
+        width: 100%;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 1.75rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .ai-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--border-soft);
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .ai-modal-header h2 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.15rem;
+        color: var(--text);
+    }
+
+    .ai-modal-header p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+    }
+
+    .ai-modal-close {
+        background: none;
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+        color: var(--text-dim);
+        line-height: 1;
+    }
+
+    .ai-loading {
+        text-align: center;
+        padding: 2rem 0;
+        color: var(--text-dim);
+    }
+
+    .ai-section-title {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 700;
+        color: var(--text-dim);
+        margin: 1.1rem 0 0.5rem 0;
+    }
+
+    .ai-risk-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .ai-risk-LOW { background: var(--success-soft); color: #86EFAC; }
+    .ai-risk-MEDIUM { background: var(--warning-soft); color: #FCD34D; }
+    .ai-risk-HIGH { background: rgba(251, 146, 60, 0.18); color: #FB923C; }
+    .ai-risk-CRITICAL { background: rgba(248, 113, 113, 0.18); color: #F87171; }
+
+    .ai-confidence {
+        margin-left: 0.6rem;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+    }
+
+    .ai-source {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-faint);
+        font-style: italic;
+    }
+
+    .ai-reasons {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--text);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .ai-mitre-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .ai-mitre-tag {
+        background: var(--surface-2, rgba(255,255,255,0.06));
+        border: 1px solid var(--border-soft);
+        border-radius: 6px;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+        color: var(--text);
+    }
+
+    .ai-mitre-tag code {
+        color: var(--text-dim);
+        margin-right: 0.35rem;
+    }
+
+    .ai-recommend {
+        margin-top: 1.25rem;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .ai-recommend .btn {
+        flex: 1;
+        min-width: 160px;
+        text-align: center;
+    }
+</style>
+
+<!-- AI Analysis Modal -->
+<div class="ai-modal-overlay" id="aiModalOverlay" onclick="if(event.target===this) closeAiModal()">
+    <div class="ai-modal">
+        <div class="ai-modal-header">
+            <div>
+                <h2 id="aiModalTitle">AI Threat Analysis</h2>
+                <p id="aiModalSubtitle">Loading device details…</p>
+            </div>
+            <button class="ai-modal-close" onclick="closeAiModal()">✕</button>
+        </div>
+        <div id="aiModalBody">
+            <div class="ai-loading">🧠 Analyzing…</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAiModal(deviceId) {
+    const overlay = document.getElementById('aiModalOverlay');
+    const body = document.getElementById('aiModalBody');
+    const title = document.getElementById('aiModalTitle');
+    const subtitle = document.getElementById('aiModalSubtitle');
+
+    title.textContent = 'AI Threat Analysis';
+    subtitle.textContent = 'Loading device details…';
+    body.innerHTML = '<div class="ai-loading">🧠 Analyzing…</div>';
+    overlay.classList.add('open');
+
+    fetch(`/api/device/${deviceId}/ai-analysis`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) {
+                body.innerHTML = `<div class="ai-loading">⚠️ ${data.error}</div>`;
+                return;
+            }
+            const d = data.device;
+            const a = data.analysis;
+
+            title.textContent = d.device_name || `${d.browser} on ${d.os}`;
+            subtitle.textContent = `${d.ip_address}${d.owner ? ' · ' + d.owner : ''} · ${d.is_trusted ? 'Trusted' : 'Pending approval'}`;
+
+            const mitreHtml = (a.mitre && a.mitre.length)
+                ? a.mitre.map(m => `<span class="ai-mitre-tag"><code>${m.id}</code>${m.name}</span>`).join('')
+                : '<span class="ai-mitre-tag">No specific MITRE technique matched</span>';
+
+            const reasonsHtml = a.reasons.map(r => `<li>${r}</li>`).join('');
+
+            const isKeep = a.recommendation === 'keep_blocked';
+            const altLabel = d.is_trusted ? 'Untrust device' : 'Approve device';
+            const altUrl = d.is_trusted ? `/admin/revoke-device/${d.id}` : `/admin/trust-device/${d.id}`;
+
+            body.innerHTML = `
+                <div>
+                    <span class="ai-risk-badge ai-risk-${a.risk_level}">⚠ ${a.risk_level} · ${a.risk_score}%</span>
+                    ${a.confidence ? `<span class="ai-confidence">Confidence: ${a.confidence}%</span>` : ''}
+                </div>
+                <div class="ai-source">${a.is_llm_generated ? `🤖 Analyzed by ${a.source}` : `⚙️ Rule-based fallback${a.source ? ' (' + a.source + ')' : ''}`}</div>
+
+                <div class="ai-section-title">AI Analysis</div>
+                <ul class="ai-reasons">${reasonsHtml}</ul>
+
+                <div class="ai-section-title">MITRE ATT&CK</div>
+                <div class="ai-mitre-list">${mitreHtml}</div>
+
+                <div class="ai-recommend">
+                    <a class="btn btn-sm ${isKeep ? 'btn-danger' : 'btn-success'}" href="${isKeep ? '#' : altUrl}" onclick="${isKeep ? 'closeAiModal(); return false;' : ''}">
+                        ✓ ${a.recommendation_label}
+                    </a>
+                </div>
+            `;
+        })
+        .catch(() => {
+            body.innerHTML = '<div class="ai-loading">⚠️ Could not load AI analysis. Please try again.</div>';
+        });
+}
+
+function closeAiModal() {
+    document.getElementById('aiModalOverlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeAiModal();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,698 @@
+{% extends "base.html" %}
+
+{% block title %}Register - ZeroTrustX{% endblock %}
+
+{% block content %}
+<div class="register-wrapper">
+    <div class="register-container">
+        <div class="register-card">
+            <!-- Header -->
+            <div class="register-header">
+                <h1>🔐 Create Account</h1>
+                <p>Join ZeroTrustX - Secure Access Platform</p>
+            </div>
+
+            {% if show_qr %}
+            <!-- SUCCESS: Show QR Code -->
+            <div class="success-section">
+                <div class="success-badge">
+                    <span class="success-icon">✅</span>
+                    <h2>Registration Successful!</h2>
+                    <p>Your account has been created</p>
+                </div>
+
+                <div class="qr-section">
+                    <h3>📱 Setup Two-Factor Authentication</h3>
+                    <p class="instructions">Scan this QR code with your authenticator app</p>
+
+                    <!-- QR CODE -->
+                    <div class="qr-code-container">
+                        <img src="{{ qr_code }}" alt="QR Code" class="qr-code-image">
+                    </div>
+
+                    <!-- OTP SECRET -->
+                    <div class="secret-box">
+                        <label>🔑 OTP Secret Key</label>
+                        <div class="secret-input-group">
+                            <input type="text" id="otpSecret" value="{{ otp_secret }}" readonly class="secret-input">
+                            <button class="copy-btn" onclick="copySecret()">
+                                <span id="copyIcon">📋</span> Copy
+                            </button>
+                        </div>
+                        <small class="secret-note">⚠️ Save this secret! You'll need it to login.</small>
+                    </div>
+                </div>
+
+                <!-- Authenticator Apps -->
+                <div class="apps-section">
+                    <h4>Recommended Authenticator Apps</h4>
+                    <div class="apps-grid">
+                        <div class="app-item">
+                            <span class="app-icon">🔵</span>
+                            <span class="app-name">Google Authenticator</span>
+                        </div>
+                        <div class="app-item">
+                            <span class="app-icon">🟦</span>
+                            <span class="app-name">Microsoft Authenticator</span>
+                        </div>
+                        <div class="app-item">
+                            <span class="app-icon">🟢</span>
+                            <span class="app-name">Authy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <a href="{{ url_for('login') }}" class="btn-primary-large">
+                    🚀 Proceed to Login
+                </a>
+            </div>
+
+            {% else %}
+            <!-- REGISTRATION FORM -->
+            <div class="form-section">
+                <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <span class="label-icon">👤</span> Username
+                        </label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="username" 
+                               name="username" 
+                               required 
+                               placeholder="Choose a username" 
+                               minlength="3" 
+                               maxlength="20"
+                               pattern="[a-zA-Z0-9_]+"
+                               title="Alphanumeric and underscore only">
+                        <small class="form-hint">3-20 characters, letters, numbers, and underscore</small>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <span class="label-icon">📧</span> Email Address
+                        </label>
+                        <input type="email" 
+                               class="form-input" 
+                               id="email" 
+                               name="email" 
+                               required 
+                               placeholder="your.email@example.com">
+                        <small class="form-hint">We'll send important updates here</small>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <span class="label-icon">🔒</span> Password
+                        </label>
+                        <div class="password-container">
+                            <input type="password" 
+                                   class="form-input" 
+                                   id="password" 
+                                   name="password" 
+                                   required 
+                                   placeholder="Create strong password" 
+                                   minlength="8">
+                            <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                👁️
+                            </button>
+                        </div>
+                        <small class="form-hint">
+                            Minimum 8 characters: uppercase, lowercase, number & special char
+                        </small>
+                        <div class="password-strength" id="passwordStrength"></div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">
+                            <span class="label-icon">🔒</span> Confirm Password
+                        </label>
+                        <div class="password-container">
+                            <input type="password" 
+                                   class="form-input" 
+                                   id="confirm_password" 
+                                   name="confirm_password" 
+                                   required 
+                                   placeholder="Confirm your password">
+                            <button type="button" class="toggle-password" onclick="togglePassword('confirm_password')">
+                                👁️
+                            </button>
+                        </div>
+                        <small class="form-hint" id="passwordMatch"></small>
+                    </div>
+
+                    <!-- Department Selection -->
+                    <div class="form-group">
+                        <label for="department" class="form-label">
+                            <span class="label-icon">🏢</span> Department
+                        </label>
+                        <select class="form-input" id="department" name="department" required>
+                            <option value="">-- Select Department --</option>
+                            <option value="IT">IT Department</option>
+                            <option value="HR">HR Department</option>
+                            <option value="Finance">Finance Department</option>
+                            <option value="Operations">Operations Department</option>
+                            <option value="Sales">Sales Department</option>
+                            <option value="Marketing">Marketing Department</option>
+                            <option value="General">General</option>
+                        </select>
+                        <small class="form-hint">Choose your department</small>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="form-group">
+                        <label for="role" class="form-label">
+                            <span class="label-icon">👤</span> Your Role/Position
+                        </label>
+                        <select class="form-input" id="role" name="role" required onchange="updateSubRoles()">
+                            <option value="">-- Select Your Role --</option>
+                            <option value="user">Employee (Standard User)</option>
+                            <option value="manager">Manager/Team Lead</option>
+                            <option value="admin">Admin (System Administrator)</option>
+                            <option value="guest">Guest (Read-only Access)</option>
+                        </select>
+                        <small class="form-hint">Select your role level</small>
+                    </div>
+
+                    <!-- Sub-Role Selection (Dynamic) -->
+                    <div class="form-group" id="sub-role-group" style="display: none;">
+                        <label for="sub_role" class="form-label">
+                            <span class="label-icon">🎯</span> Specialization / Sub-Role
+                        </label>
+                        <select class="form-input" id="sub_role" name="sub_role">
+                            <option value="">-- Select Sub-Role --</option>
+                        </select>
+                        <small class="form-hint">Specific job title or specialization</small>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-submit">
+                        <span>🚀 Create Account</span>
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="form-footer">
+                    <p>Already have an account? 
+                        <a href="{{ url_for('login') }}" class="link-primary">
+                            Login here →
+                        </a>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .register-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .register-container {
+        max-width: 550px;
+        width: 100%;
+    }
+
+    .register-card {
+        background: var(--surface);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .register-header {
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .register-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .register-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+
+    .form-section {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .label-icon {
+        font-size: 1.2rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 0.4rem;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+    }
+
+    .password-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border-soft);
+        transition: all 0.3s;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-soft);
+    }
+
+    .form-footer p {
+        margin: 0;
+        color: var(--text-dim);
+    }
+
+    .link-primary {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .link-primary:hover {
+        text-decoration: underline;
+    }
+
+    /* SUCCESS SECTION */
+    .success-section {
+        padding: 2rem;
+    }
+
+    .success-badge {
+        text-align: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--success-soft) 0%, rgba(34,197,94,0.25) 100%);
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .success-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .success-badge h2 {
+        margin: 0;
+        color: #86EFAC;
+        font-size: 1.5rem;
+    }
+
+    .success-badge p {
+        margin: 0.5rem 0 0 0;
+        color: #86EFAC;
+    }
+
+    .qr-section {
+        background: var(--surface-2);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .qr-section h3 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text);
+        text-align: center;
+    }
+
+    .instructions {
+        text-align: center;
+        color: var(--text-dim);
+        margin-bottom: 1.5rem;
+    }
+
+    .qr-code-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .qr-code-image {
+        max-width: 250px;
+        border: 3px solid var(--accent);
+        border-radius: 15px;
+        padding: 15px;
+        background: var(--surface);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .secret-box {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 10px;
+        border: 2px solid var(--border-soft);
+    }
+
+    .secret-box label {
+        display: block;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .secret-input-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .secret-input {
+        flex: 1;
+        padding: 0.8rem;
+        border: 2px solid var(--border-soft);
+        border-radius: 8px;
+        font-family:'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        background: var(--surface-2);
+    }
+
+    .copy-btn {
+        padding: 0.8rem 1.5rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+        background: #2563eb;
+    }
+
+    .secret-note {
+        display: block;
+        margin-top: 0.8rem;
+        color: var(--danger);
+        font-weight: 600;
+    }
+
+    .apps-section {
+        margin-bottom: 2rem;
+    }
+
+    .apps-section h4 {
+        text-align: center;
+        color: var(--text);
+        margin-bottom: 1rem;
+    }
+
+    .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .app-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem;
+        background: var(--surface-2);
+        border-radius: 8px;
+        border: 2px solid var(--border-soft);
+    }
+
+    .app-icon {
+        font-size: 1.5rem;
+    }
+
+    .app-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .btn-primary-large {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+    .btn-primary-large:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .register-wrapper {
+            padding: 1rem;
+        }
+
+        .register-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .form-section {
+            padding: 1.5rem;
+        }
+
+        .qr-code-image {
+            max-width: 200px;
+        }
+    }
+</style>
+
+<script>
+// ✨ SUB-ROLE MAPPING
+const subRoleMap = {
+    'guest': [],
+    'user': ['Employee', 'Contractor', 'Intern', 'Remote Worker', 'Consultant'],
+    'manager': [
+        'Team Lead',
+        'Project Manager',
+        'Department Manager',
+        'HR Manager',
+        'Finance Manager',
+        'IT Manager',
+        'Operations Manager',
+        'Sales Manager',
+        'Marketing Manager'
+    ],
+    'admin': [
+        'System Admin',
+        'Security Admin',
+        'Network Admin',
+        'Database Admin',
+        'DevOps Engineer'
+    ]
+};
+
+// Update sub-roles based on role selection
+function updateSubRoles() {
+    const roleSelect = document.getElementById('role');
+    const subRoleGroup = document.getElementById('sub-role-group');
+    const subRoleSelect = document.getElementById('sub_role');
+    
+    const selectedRole = roleSelect.value;
+    
+    // Clear existing options
+    subRoleSelect.innerHTML = '<option value="">-- Select Sub-Role --</option>';
+    
+    if (selectedRole && subRoleMap[selectedRole] && subRoleMap[selectedRole].length > 0) {
+        // Show sub-role field
+        subRoleGroup.style.display = 'block';
+        
+        // Add options
+        subRoleMap[selectedRole].forEach(subRole => {
+            const option = document.createElement('option');
+            option.value = subRole;
+            option.textContent = subRole;
+            subRoleSelect.appendChild(option);
+        });
+    } else {
+        // Hide sub-role field
+        subRoleGroup.style.display = 'none';
+    }
+}
+
+function copySecret() {
+    const secret = "{{ otp_secret }}";
+    const copyBtn = document.querySelector('.copy-btn');
+    const copyIcon = document.getElementById('copyIcon');
+
+    navigator.clipboard.writeText(secret).then(() => {
+        copyIcon.textContent = '✅';
+        copyBtn.style.background = '#22C55E';
+
+        setTimeout(() => {
+            copyIcon.textContent = '📋';
+            copyBtn.style.background = '#3B82F6';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy. Please copy manually.');
+    });
+}
+
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = field.nextElementSibling;
+
+    if (field.type === 'password') {
+        field.type = 'text';
+        button.textContent = '🙈';
+    } else {
+        field.type = 'password';
+        button.textContent = '👁️';
+    }
+}
+
+// Password strength checker
+const passwordInput = document.getElementById('password');
+const strengthBar = document.getElementById('passwordStrength');
+
+if (passwordInput && strengthBar) {
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+        const colors = ['#EF4444', '#F59E0B', '#3B82F6', '#22C55E'];
+        const widths = ['20%', '40%', '70%', '100%'];
+
+        if (strength > 0) {
+            strengthBar.style.display = 'block';
+            strengthBar.style.background = colors[strength - 1];
+            strengthBar.style.width = widths[strength - 1];
+        } else {
+            strengthBar.style.display = 'none';
+        }
+    });
+}
+
+// Password match checker
+const confirmPassword = document.getElementById('confirm_password');
+const passwordMatch = document.getElementById('passwordMatch');
+
+if (confirmPassword && passwordMatch) {
+    confirmPassword.addEventListener('input', function() {
+        if (this.value === '') {
+            passwordMatch.textContent = '';
+            passwordMatch.style.color = '#9AA4B2';
+        } else if (this.value === passwordInput.value) {
+            passwordMatch.textContent = '✅ Passwords match';
+            passwordMatch.style.color = '#22C55E';
+        } else {
+            passwordMatch.textContent = '❌ Passwords do not match';
+            passwordMatch.style.color = '#EF4444';
+        }
+    });
+}
+
+// Form validation
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+    registerForm.addEventListener('submit', function(e) {
+        const password = passwordInput.value;
+        const confirm = confirmPassword.value;
+
+        if (password !== confirm) {
+            e.preventDefault();
+            alert('❌ Passwords do not match!');
+            confirmPassword.focus();
+        }
+    });
+}
+</script>
+{% endblock %}

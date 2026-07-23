@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}System Health - ZeroTrustX{% endblock %}
+{% block page_title %}System Health{% endblock %}
+{% block page_crumb %}Live metrics and security score{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+    </a>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <span class="crumb-sep">›</span>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        <span class="crumb-sep">›</span>
+        <span class="crumb-current">System Health</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+    <h1>💻 System Health</h1>
+    <p>Real-time platform metrics.</p>
+</div>
+
+<div class="metrics-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--space-2);margin-bottom:var(--space-3);">
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Security Score</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;">{{ security_score.score }} <span style="font-size:0.95rem;color:var(--text-faint);">({{ security_score.grade }})</span></p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Total Users</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;">{{ metrics.total_users }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Active Sessions</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;">{{ metrics.active_sessions }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Untrusted Devices</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;color:var(--warning);">{{ metrics.untrusted_devices }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Locked Accounts</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;color:var(--danger);">{{ metrics.locked_users }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Failed Logins (24h)</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;color:var(--danger);">{{ metrics.failed_logins_24h }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+        <h3 style="font-size:0.8rem;color:var(--text-faint);">Access Denials (24h)</h3>
+        <p style="font-size:1.8rem;font-weight:700;margin-top:6px;color:var(--warning);">{{ metrics.access_denials_24h }}</p>
+    </div></div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3>Active Sessions</h3>
+            <div class="subtitle">Currently signed-in users</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th>User</th><th>IP Address</th><th>Started</th></tr></thead>
+                <tbody>
+                {% for s in active_sessions %}
+                    <tr>
+                        <td>{{ s.username }}</td>
+                        <td><code>{{ s.ip_address }}</code></td>
+                        <td>{{ s.created_at if s.created_at else '-' }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3" class="text-muted text-center">No active sessions</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
