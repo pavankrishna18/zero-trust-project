@@ -38,7 +38,7 @@ class Config:
     ENABLE_ACTIVITY_LOGGING = True
     
     # ==================== ✅ ENHANCED SECURITY FEATURES ====================
-    ENABLE_IP_WHITELIST = True
+    ENABLE_IP_WHITELIST = False
     ENABLE_RISK_SCORING = True
     ENABLE_GEOLOCATION = True
     ENABLE_THREAT_INTELLIGENCE = True
@@ -267,7 +267,7 @@ class DevelopmentConfig(Config):
     FORCE_HTTPS = False
     
     # Keep all security features enabled for testing
-    ENABLE_IP_WHITELIST = True
+    ENABLE_IP_WHITELIST = False
     ENABLE_RISK_SCORING = True
     ENABLE_GEOLOCATION = True
     ENABLE_THREAT_INTELLIGENCE = True
@@ -294,7 +294,7 @@ class ProductionConfig(Config):
     WTF_CSRF_SSL_STRICT = True
     
     # All features enabled
-    ENABLE_IP_WHITELIST = True
+    ENABLE_IP_WHITELIST = False
     ENABLE_RISK_SCORING = True
     ENABLE_GEOLOCATION = True
     ENABLE_THREAT_INTELLIGENCE = True
