@@ -1947,5 +1947,5 @@ if __name__ == '__main__':
     
     logger.info('✅ ZeroTrustX Enterprise Edition started')
     
-    socketio.run(app, debug=not is_production, use_reloader=False, host='0.0.0.0', port=5000, log_output=False)
+    socketio.run(app, debug=not is_production, use_reloader=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)), log_output=False)
 
